@@ -1,0 +1,143 @@
+---
+title: "Presentation Ninja"
+subtitle: "&#x2694;&#xFE0F; xaringan +<br/>&#x1F60E; xaringanthemer"  
+author: 
+  - "Yihui Xie"
+  - "Garrick Aden-Buie"
+date: '`r Sys.Date()`'
+output:
+  xaringan::moon_reader:
+    css: ["default", "xaringan-themer.css"]
+    lib_dir: libs
+    seal: false
+    nature:
+      slideNumberFormat: "%current%"
+      highlightStyle: solarized-light
+      highlightLines: true
+      ratio: 16:9
+      countIncrementalSlides: true
+      beforeInit: "macros.js"
+---
+```{r xaringan-themer, include = FALSE, warning = FALSE, message = FALSE}
+
+library(xaringanthemer)
+library(lubridate)
+library(tidyverse)
+library(ggplot2)
+library(ggthemr)
+style_solarized_light()
+
+```
+
+class: bottom
+background-image: url("images/mario_pipe_gif.gif")
+background-size: cover
+
+
+
+
+.left-column[
+
+<br>
+
+# Automated
+# Analysis 
+# Pipelines 
+# in <img src="images/r-programming-language.png" style="width: 45%" />
+]
+
+
+.right-column[
+.pull-right[
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+## Scott Coggeshall
+## HSR&D, VA Puget Sound
+]
+]
+
+---
+
+---
+class: center
+# ANOTHER `R` package?!
+
+--
+
+```{r packages, cache = TRUE, include = FALSE, message = FALSE, warning = FALSE}
+
+packages_dat <- read.csv("data/results.csv")
+
+packages_dat <- packages_dat %>% mutate(month = month(first_release), 
+                                        year = year(first_release))
+
+packages_summarized <- packages_dat %>% group_by(month, year) %>% summarize(n_packages = n())  %>% arrange(year, month) %>% ungroup()
+
+packages_summarized <- packages_summarized %>% mutate(n_packages_cumulative = cumsum(n_packages))
+
+```
+
+```{r, echo = FALSE, fig.width = 12, fig.height = 8, fig.retina = 3}
+
+ggthemr("solarized", text_size = 30, type = "outer")
+
+packages_summarized %>% ggplot(aes(x = mdy(paste(month, 1, year)), y = n_packages_cumulative)) + geom_line(lwd = 2) + labs(x = "Month/Year",
+                                                      y = "Number of Packages") +
+  scale_x_date(breaks = "year", date_labels = "%Y") + 
+  theme(axis.text.x = element_text(angle = 45, vjust = .5), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()) + 
+  labs(x = "")
+
+```
+
+---
+.pull-left[
+<img src="images/data.table.png" style="width: 100%" />]
+.pull-right[
+<img src="images/tidyverse2.png" style="width: 100%" />]
+
+---
+.pull-left[
+<img src="images/logo_drake2.svg" style="width: 100%" />]
+.pull-right[
+<img src="images/logo_targets.png" style="width: 100%" />]
+
+---
+
+
+
+# Code to Run Your Code
+
+--
+
+# Why?
+
+--
+### - Consistent and reproducible results
+
+--
+
+### - Hassle-free updating when things change
+
+--
+
+## PLUS 
+
+--
+.right-column[
+### - `R` object storage and management
+
+--
+
+### - easy parallelizability 
+]
